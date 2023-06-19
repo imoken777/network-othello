@@ -16,8 +16,84 @@ const board: BoardArray = [
 
 export const boardUsecase = {
   getBoard: () => board,
+
   clickBoard: (x: number, y: number, userId: UserId): BoardArray => {
-    board[y][x] = UserColorUsecase.getUserColor(userId);
+    const directions = [
+      [-1, 0], // 上
+      [-1, 1], // 右上
+      [0, 1], // 右
+      [1, 1], // 右下
+      [1, 0], // 下
+      [1, -1], // 左下
+      [0, -1], // 左
+      [-1, -1], // 左上
+    ];
+
+    const isValidMove = (
+      board: number[][],
+      x: number,
+      y: number,
+      dx: number,
+      dy: number,
+      turnColor: number
+    ): boolean => {
+      return (
+        board[y + dy] !== undefined &&
+        board[y + dy][x + dx] !== undefined &&
+        board[y + dy][x + dx] !== 0 &&
+        board[y + dy][x + dx] !== turnColor &&
+        board[y][x] === 0
+      );
+    };
+
+    const findLengthToTurnColor = (
+      board: number[][],
+      x: number,
+      y: number,
+      dx: number,
+      dy: number,
+      turnColor: number
+    ): number => {
+      for (
+        let i = 1;
+        y + i * dy >= 0 &&
+        y + i * dy < board.length &&
+        x + i * dx >= 0 &&
+        x + i * dx < board.length;
+        i++
+      ) {
+        if (board[y + i * dy][x + i * dx] === turnColor) {
+          return i;
+        }
+      }
+      return -1;
+    };
+
+    const flipDisks = (
+      board: number[][],
+      x: number,
+      y: number,
+      dx: number,
+      dy: number,
+      length: number,
+      turnColor: number
+    ) => {
+      for (let j = 1; j < length; j++) {
+        board[y + j * dy][x + j * dx] = turnColor;
+      }
+    };
+
+    const turnColor = UserColorUsecase.getUserColor(userId);
+
+    for (const [dy, dx] of directions) {
+      if (isValidMove(board, x, y, dx, dy, turnColor)) {
+        const length = findLengthToTurnColor(board, x, y, dx, dy, turnColor);
+        if (length > 0) {
+          board[y][x] = turnColor;
+          flipDisks(board, x, y, dx, dy, length, turnColor);
+        }
+      }
+    }
     return board;
   },
 };
