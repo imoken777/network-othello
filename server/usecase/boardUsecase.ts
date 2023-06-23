@@ -17,7 +17,7 @@ const board: BoardArray = [
 export const boardUsecase = {
   getBoard: () => board,
 
-  clickBoard: (x: number, y: number, userId: UserId): BoardArray => {
+  clickCell: (x: number, y: number, userId: UserId): BoardArray => {
     const directions = [
       [-1, 0], // 上
       [-1, 1], // 右上
@@ -84,7 +84,6 @@ export const boardUsecase = {
     };
 
     const turnColor = UserColorUsecase.getUserColor(userId);
-
     for (const [dy, dx] of directions) {
       if (isValidMove(board, x, y, dx, dy, turnColor)) {
         const length = findLengthToTurnColor(board, x, y, dx, dy, turnColor);

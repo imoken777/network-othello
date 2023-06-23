@@ -35,7 +35,7 @@ export const roomUsecase = {
 
     assert(latest, 'クリックできてるんだからRoomが無いわけがない');
 
-    const newBoard: number[][] = boardUsecase.clickBoard(x, y, userId);
+    const newBoard: number[][] = boardUsecase.clickCell(x, y, userId);
 
     const newRoom: RoomModel = { ...latest, board: newBoard };
 
