@@ -47,9 +47,13 @@ const Home = () => {
   return (
     <>
       <BasicHeader user={user} />
-      <div className={styles.title} style={{ marginTop: '160px' }}>
-        Welcome to frourio!
-      </div>
+      <a
+        className={styles.title}
+        style={{ marginTop: '160px' }}
+        href="http://localhost:3000/othello/"
+      >
+        go to othello
+      </a>
 
       <form style={{ textAlign: 'center', marginTop: '80px' }} onSubmit={createTask}>
         <input value={label} type="text" onChange={inputLabel} />

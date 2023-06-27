@@ -14,6 +14,8 @@ const board: BoardArray = [
   [0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
+let nowTurnColor = 1;
+
 export const boardUsecase = {
   getBoard: () => board,
 
@@ -84,13 +86,20 @@ export const boardUsecase = {
     };
 
     const turnColor = UserColorUsecase.getUserColor(userId);
-    for (const [dy, dx] of directions) {
-      if (isValidMove(board, x, y, dx, dy, turnColor)) {
-        const length = findLengthToTurnColor(board, x, y, dx, dy, turnColor);
-        if (length > 0) {
-          board[y][x] = turnColor;
-          flipDisks(board, x, y, dx, dy, length, turnColor);
+    if (nowTurnColor === turnColor) {
+      let isMoveMade = false;
+      for (const [dy, dx] of directions) {
+        if (isValidMove(board, x, y, dx, dy, turnColor)) {
+          const length = findLengthToTurnColor(board, x, y, dx, dy, turnColor);
+          if (length > 0) {
+            isMoveMade = true;
+            flipDisks(board, x, y, dx, dy, length, turnColor);
+          }
         }
+      }
+      if (isMoveMade) {
+        board[y][x] = turnColor;
+        nowTurnColor = 3 - nowTurnColor; // すべての石が裏返された後にターンを切り替え
       }
     }
     return board;
